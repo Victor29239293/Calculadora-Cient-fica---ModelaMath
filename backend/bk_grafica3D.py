@@ -1,9 +1,7 @@
 import numpy as np
 
 def generar_malla(x0: float, x1: float, y0: float, y1: float, num: int = 150) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Genera dos arreglos X, Y con malla de puntos entre los rangos dados.
-    """
+
     if x0 >= x1 or y0 >= y1:
         raise ValueError("Los rangos deben cumplir: Xmin < Xmax y Ymin < Ymax.")
     x = np.linspace(x0, x1, num)
@@ -12,10 +10,7 @@ def generar_malla(x0: float, x1: float, y0: float, y1: float, num: int = 150) ->
 
 
 def evaluar_funcion_3d(func_str: str, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
-    """
-    Evalúa la función de dos variables dada como cadena en la malla X, Y.
-    Permite solo funciones seguras de numpy.
-    """
+
     context = {
         "sin": np.sin,
         "cos": np.cos,

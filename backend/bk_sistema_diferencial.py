@@ -5,7 +5,6 @@ except ImportError:
     expm = None
 
 
-
 def _parse_coeffs(eq_str):
     s = eq_str.replace(" ", "").replace("-", "+-")
     terms = s.split("+")
@@ -17,9 +16,7 @@ def _parse_coeffs(eq_str):
             ay = float(term.replace("*y", ""))
     return ax, ay
 
-
 def solve_system(f1_str, f2_str, x0, y0, T, h, metodo):
-    # Define derivatives
     def dxdt(x, y): return eval(f1_str)
     def dydt(x, y): return eval(f2_str)
 
@@ -27,7 +24,7 @@ def solve_system(f1_str, f2_str, x0, y0, T, h, metodo):
     x_vals = [x0]
     y_vals = [y0]
 
-    # Analytic setup
+
     if metodo == "Analítico":
         if expm is None:
             raise ImportError("Método analítico requiere 'scipy'.")
@@ -42,7 +39,6 @@ def solve_system(f1_str, f2_str, x0, y0, T, h, metodo):
             y_vals.append(float(sol[1]))
         return t_vals, x_vals, y_vals
 
-    # Numerical methods
     for i in range(1, len(t_vals)):
         xp, yp = x_vals[-1], y_vals[-1]
         if metodo == "Euler":

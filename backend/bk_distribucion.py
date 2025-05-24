@@ -1,4 +1,5 @@
 import numpy as np
+import random
 try:
     from scipy.stats import poisson
 except ImportError:
@@ -61,7 +62,7 @@ class GeneradorDistribuciones:
         return normales[:len(u_vals)]
 
     def aplicar_binomial(self, u_vals, n=10, p=0.5):
-        import random
+
         resultados = []
         for _ in u_vals:
             count = sum(1 if random.random() < p else 0 for _ in range(n))

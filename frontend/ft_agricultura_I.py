@@ -10,11 +10,9 @@ import os
 import numpy as np
 from backend.bk_agricultura_I import simulate_soil_moisture
 
-# Configuración global de tema
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
-# Clase mejorada de tooltip
 class ToolTip:
     def __init__(self, widget, text):
         self.widget = widget
@@ -55,40 +53,31 @@ class ToolTip:
 class AgriculturaApp(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
-        
-        # Configuración de la ventana principal
-        # self.title("AgroRiego - Sistema de Simulación de Irrigación")
-        # self.geometry("1000x700")
-        # self.minsize(800, 600)
-        
-        # Variables para datos de simulación
+
         self.simulation_data = None
         
-        # Crear la UI principal
         self.create_ui()
         
     def create_ui(self):
-        # Frame principal con dos columnas
+  
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=3)
         self.grid_rowconfigure(0, weight=1)
         
-        # Panel izquierdo (controles)
+
         self.sidebar = ctk.CTkFrame(self, fg_color="#1A1C2C", corner_radius=15)
         self.sidebar.grid(row=0, column=0, padx=(20, 10), pady=20, sticky="nsew")
         
-        # Panel derecho (visualización)
+
         self.main_panel = ctk.CTkFrame(self, fg_color="#1E2030", corner_radius=15)
         self.main_panel.grid(row=0, column=1, padx=(10, 20), pady=20, sticky="nsew")
         
-        # Configurar sidebar
         self.setup_sidebar()
         
-        # Configurar panel principal
+
         self.setup_main_panel()
         
     def setup_sidebar(self):
-        # Título del panel
         header = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         header.pack(fill="x", padx=15, pady=(15, 5))
         
@@ -111,7 +100,6 @@ class AgriculturaApp(ctk.CTkFrame):
         separator = ctk.CTkFrame(self.sidebar, height=2, fg_color="#364A82")
         separator.pack(fill="x", padx=15, pady=5)
         
-        # Parámetros
         param_container = ctk.CTkScrollableFrame(
             self.sidebar, 
             fg_color="transparent",
@@ -121,7 +109,6 @@ class AgriculturaApp(ctk.CTkFrame):
         )
         param_container.pack(fill="both", expand=True, padx=15, pady=10)
         
-        # Definición de parámetros
         labels = [
             ("Capacidad de campo", "Capacidad máxima de humedad del suelo (0–1)"),
             ("Punto de marchitez", "Humedad mínima antes de marchitarse (0–1)"),
@@ -133,16 +120,13 @@ class AgriculturaApp(ctk.CTkFrame):
             ("Paso dt (h)", "Paso de tiempo en horas"),
         ]
         
-        # Valores por defecto
         defaults = [0.4, 0.1, 0.2, 5, 1, 0.3, 48, 0.5]
         
-        # Crear los campos de entrada
         self.entries = {}
         for i, ((lbl, tip), val) in enumerate(zip(labels, defaults)):
             frame = ctk.CTkFrame(param_container, fg_color="#242842", corner_radius=10)
             frame.pack(fill="x", pady=8, padx=5)
             
-            # Etiqueta y campo de entrada en la misma fila
             label = ctk.CTkLabel(
                 frame, 
                 text=lbl, 
@@ -152,7 +136,6 @@ class AgriculturaApp(ctk.CTkFrame):
             )
             label.pack(side="top", anchor="w", padx=12, pady=(10, 5))
             
-            # Entrada con estilo mejorado
             entry = ctk.CTkEntry(
                 frame, 
                 width=140, 
@@ -165,10 +148,8 @@ class AgriculturaApp(ctk.CTkFrame):
             entry.insert(0, str(val))
             self.entries[lbl] = entry
             
-            # Asociar tooltip
             ToolTip(frame, tip)
         
-        # Botones de acción
         actions_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         actions_frame.pack(fill="x", padx=15, pady=15)
         
@@ -213,7 +194,7 @@ class AgriculturaApp(ctk.CTkFrame):
         btn_guardar.grid(row=0, column=1, padx=(5, 0), sticky="ew")
         
     def setup_main_panel(self):
-        # Configuración de pestañas
+
         self.main_panel.grid_rowconfigure(0, weight=1)
         self.main_panel.grid_columnconfigure(0, weight=1)
         
@@ -229,27 +210,22 @@ class AgriculturaApp(ctk.CTkFrame):
         )
         self.tabs.grid(row=0, column=0, padx=15, pady=15, sticky="nsew")
         
-        # Pestaña de gráfica
+  
         self.tab_graph = self.tabs.add("Gráfico de Simulación")
         self.tabs.set("Gráfico de Simulación")  # Pestaña activa por defecto
         
-        # Pestaña de balance hídrico
         self.tab_balance = self.tabs.add("Balance Hídrico")
         
-        # Pestaña de resumen
         self.tab_summary = self.tabs.add("Resumen")
         
-        # Configurar contenido de pestañas
         self.setup_graph_tab()
         self.setup_balance_tab()
         self.setup_summary_tab()
         
     def setup_graph_tab(self):
-        # Frame para el gráfico
         self.graph_frame = ctk.CTkFrame(self.tab_graph, fg_color="#181926", corner_radius=10)
         self.graph_frame.pack(fill="both", expand=True, padx=15, pady=15)
         
-        # Placeholder
         self.placeholder_label = ctk.CTkLabel(
             self.graph_frame,
             text="Ejecute una simulación para visualizar\nresultados gráficos",
@@ -258,15 +234,12 @@ class AgriculturaApp(ctk.CTkFrame):
         )
         self.placeholder_label.pack(fill="both", expand=True)
         
-        # Se añadirá el canvas después de ejecutar la simulación
         self.canvas = None
         
     def setup_balance_tab(self):
-        # Frame para el balance
         balance_container = ctk.CTkFrame(self.tab_balance, fg_color="transparent")
         balance_container.pack(fill="both", expand=True, padx=15, pady=15)
-        
-        # Cabecera
+  
         header = ctk.CTkFrame(balance_container, fg_color="#242842", corner_radius=10, height=50)
         header.pack(fill="x", pady=(0, 10))
         header.pack_propagate(False)
@@ -278,7 +251,6 @@ class AgriculturaApp(ctk.CTkFrame):
             text_color="#8AADF4"
         ).pack(side="left", padx=15)
         
-        # Tabla de balance
         self.balance_frame = ctk.CTkScrollableFrame(
             balance_container,
             fg_color="#181926",
@@ -289,7 +261,6 @@ class AgriculturaApp(ctk.CTkFrame):
         )
         self.balance_frame.pack(fill="both", expand=True)
         
-        # Se rellena después de la simulación
         self.balance_text = ctk.CTkTextbox(
             self.balance_frame, 
             fg_color="#181926", 
@@ -301,15 +272,14 @@ class AgriculturaApp(ctk.CTkFrame):
         self.balance_text.pack(fill="both", expand=True, padx=5, pady=5)
         
     def setup_summary_tab(self):
-        # Frame para el resumen
+
         summary_container = ctk.CTkFrame(self.tab_summary, fg_color="transparent")
         summary_container.pack(fill="both", expand=True, padx=15, pady=15)
-        
-        # Crear el frame del resumen
-        self.summary_frame = ctk.CTkFrame(summary_container, fg_color="#181926", corner_radius=10)
+
+        # Cambia CTkFrame por CTkScrollableFrame aquí:
+        self.summary_frame = ctk.CTkScrollableFrame(summary_container, fg_color="#181926", corner_radius=10)
         self.summary_frame.pack(fill="both", expand=True)
-        
-        # Placeholder hasta que se ejecute la simulación
+
         self.summary_placeholder = ctk.CTkLabel(
             self.summary_frame,
             text="Ejecute una simulación para generar un resumen",
@@ -317,11 +287,9 @@ class AgriculturaApp(ctk.CTkFrame):
             text_color="#A5ADCB"
         )
         self.summary_placeholder.pack(fill="both", expand=True)
-        
-        # Contenido real (se mostrará después de la simulación)
+
         self.summary_content = ctk.CTkFrame(self.summary_frame, fg_color="#181926")
         
-        # Se configurará después de la simulación
         
     def load_params(self):
         path = filedialog.askopenfilename(
@@ -385,10 +353,8 @@ class AgriculturaApp(ctk.CTkFrame):
 
     def on_simular(self):
         try:
-            # Recopilar valores
             vals = {lbl: float(e.get()) for lbl, e in self.entries.items()}
-            
-            # Ejecutar simulación
+
             self.simulation_data = simulate_soil_moisture(
                 field_capacity=vals["Capacidad de campo"],
                 wilting_point=vals["Punto de marchitez"],
@@ -399,13 +365,11 @@ class AgriculturaApp(ctk.CTkFrame):
                 t_end=vals["Simulación (h)"],
                 dt=vals["Paso dt (h)"],
             )
-            
-            # Actualizar visualizaciones
+
             self._plot_graph()
             self._show_balance()
             self._update_summary()
-            
-            # Cambiar a la pestaña de gráfico
+
             self.tabs.set("Gráfico de Simulación")
             
         except Exception as e:
@@ -417,28 +381,23 @@ class AgriculturaApp(ctk.CTkFrame):
             )
 
     def _plot_graph(self):
-        # Limpiar gráfico existente
+
         if self.canvas:
             self.canvas.get_tk_widget().destroy()
             
-        # Esconder el placeholder
         self.placeholder_label.pack_forget()
         
-        # Crear figura con estilo
         plt.style.use('dark_background')
         fig = Figure(figsize=(8, 5), dpi=100, facecolor="#181926")
         ax = fig.add_subplot(111)
-        
-        # Agregar datos
+
         data = self.simulation_data
-        
-        # Línea principal de humedad
+
         ax.plot(data['t'], data['theta'], 
                 linewidth=2.5, 
                 color='#8AADF4', 
                 label='Humedad del suelo')
                 
-        # Agregar puntos de riego
         irrigation_times = data['t'][data['events']]
         irrigation_values = data['theta'][data['events']]
         
@@ -452,7 +411,6 @@ class AgriculturaApp(ctk.CTkFrame):
                       label='Evento de riego',
                       zorder=5)
                       
-        # Agregar líneas de referencia
         field_capacity = float(self.entries["Capacidad de campo"].get())
         wilting_point = float(self.entries["Punto de marchitez"].get())
         threshold = float(self.entries["Umbral riego"].get())
@@ -460,53 +418,46 @@ class AgriculturaApp(ctk.CTkFrame):
         ax.axhline(y=field_capacity, color='#A6DA95', linestyle='--', alpha=0.8, label='Capacidad de campo')
         ax.axhline(y=wilting_point, color='#ED8796', linestyle='--', alpha=0.8, label='Punto de marchitez')
         ax.axhline(y=threshold, color='#EED49F', linestyle=':', alpha=0.8, label='Umbral de riego')
-        
-        # Configurar ejes y estilo
+ 
         ax.set_xlabel("Tiempo (horas)", fontsize=12, color='#CAD3F5')
         ax.set_ylabel("Contenido de humedad (θ)", fontsize=12, color='#CAD3F5')
         ax.set_ylim(0, max(1.0, field_capacity * 1.2))
         ax.set_xlim(0, data['t'][-1])
-        
-        # Personalizar grid y ticks
+
         ax.grid(True, linestyle=':', alpha=0.3, color='#A5ADCB')
         ax.tick_params(colors='#CAD3F5', which='both')
         for spine in ax.spines.values():
             spine.set_color('#364A82')
             
-        # Configurar título
+
         ax.set_title("Simulación de Humedad del Suelo y Eventos de Riego", 
                     fontsize=14, color='#8AADF4', pad=10)
                     
-        # Configurar leyenda
         legend = ax.legend(loc='upper right', frameon=True, fancybox=True, 
                           framealpha=0.7, edgecolor='#364A82', fontsize=10)
         legend.get_frame().set_facecolor('#242842')
         for text in legend.get_texts():
             text.set_color('#CAD3F5')
             
-        # Ajustar espacios
         fig.tight_layout(pad=3.0)
         
-        # Crear canvas
         self.canvas = FigureCanvasTkAgg(fig, master=self.graph_frame)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
 
     def _show_balance(self):
-        # Limpiar texto anterior
+
         self.balance_text.delete("0.0", "end")
         
         if not self.simulation_data:
             self.balance_text.insert("end", "No hay datos de simulación disponibles.")
             return
         
-        # Insertar cabecera (sin estilos)
         self.balance_text.insert("end", "Tiempo (h)".ljust(15))
         self.balance_text.insert("end", "Balance (mm)".ljust(15))
         self.balance_text.insert("end", "Estado\n")
         self.balance_text.insert("end", "─" * 45 + "\n")
         
-        # Insertar datos
         data = self.simulation_data
         for i, (ti, b) in enumerate(zip(data['t'], data['balance'])):
             if i % max(1, len(data['t']) // 100) == 0 or i == len(data['t']) - 1:
@@ -520,28 +471,22 @@ class AgriculturaApp(ctk.CTkFrame):
                     self.balance_text.insert("end", "Equilibrio\n")
 
     def _update_summary(self):
-        # Esconder placeholder
         self.summary_placeholder.pack_forget()
         
-        # Limpiar contenido existente
         for widget in self.summary_content.winfo_children():
             widget.destroy()
             
-        # Mostrar contenido
         self.summary_content.pack(fill="both", expand=True, padx=15, pady=15)
         
         data = self.simulation_data
         if not data:
             return
-            
-        # Calcular estadísticas
+
         field_capacity = float(self.entries["Capacidad de campo"].get())
         wilting_point = float(self.entries["Punto de marchitez"].get())
-        
-        # Conteo de eventos de riego
+
         irrigation_events = np.sum(data['events'])
-        
-        # Tiempo promedio entre riegos
+
         event_indices = np.where(data['events'])[0]
         if len(event_indices) > 1:
             event_times = data['t'][event_indices]
@@ -549,23 +494,19 @@ class AgriculturaApp(ctk.CTkFrame):
         else:
             avg_time_between = 0
             
-        # Humedad promedio
         avg_moisture = np.mean(data['theta'])
         
-        # Tiempo total en condiciones óptimas (entre umbral y capacidad)
+
         threshold = float(self.entries["Umbral riego"].get())
         optimal_time = np.sum((data['theta'] >= threshold) & (data['theta'] <= field_capacity)) * float(self.entries["Paso dt (h)"].get())
         total_time = float(self.entries["Simulación (h)"].get())
         optimal_percent = (optimal_time / total_time) * 100 if total_time > 0 else 0
-        
-        # Consumo de agua total
+       
         irrigation_rate = float(self.entries["Tasa riego (mm/h)"].get())
         water_usage = irrigation_events * irrigation_rate * float(self.entries["Paso dt (h)"].get())
         
-        # Balance hídrico final
         final_balance = data['balance'][-1]
         
-        # Crear contenido de resumen
         title_frame = ctk.CTkFrame(self.summary_content, fg_color="#242842", corner_radius=10)
         title_frame.pack(fill="x", pady=(0, 15))
         
@@ -576,13 +517,13 @@ class AgriculturaApp(ctk.CTkFrame):
             text_color="#8AADF4"
         ).pack(pady=10)
         
-        # Grid para estadísticas
+
         stats_grid = ctk.CTkFrame(self.summary_content, fg_color="transparent")
         stats_grid.pack(fill="both", expand=True)
         stats_grid.grid_columnconfigure(0, weight=1)
         stats_grid.grid_columnconfigure(1, weight=1)
         
-        # Función para crear tarjetas de estadísticas
+
         def create_stat_card(parent, title, value, unit, row, col, text_color="#CAD3F5", value_color="#F5A97F"):
             card = ctk.CTkFrame(parent, fg_color="#242842", corner_radius=10)
             card.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
@@ -608,14 +549,13 @@ class AgriculturaApp(ctk.CTkFrame):
                 text_color=text_color
             ).pack(pady=(0, 10))
             
-        # Crear tarjetas de estadísticas
+
         create_stat_card(stats_grid, "Eventos de Riego", irrigation_events, "eventos", 0, 0)
         create_stat_card(stats_grid, "Tiempo entre Riegos", f"{avg_time_between:.1f}", "horas", 0, 1)
         create_stat_card(stats_grid, "Humedad Promedio", f"{avg_moisture:.2f}", "θ", 1, 0)
         create_stat_card(stats_grid, "Tiempo en Condiciones Óptimas", f"{optimal_percent:.1f}", "% del tiempo", 1, 1)
         create_stat_card(stats_grid, "Consumo de Agua", f"{water_usage:.1f}", "mm", 2, 0)
-        
-        # Balance final con color según el valor
+
         balance_color = "#A6DA95" if final_balance >= 0 else "#ED8796"
         create_stat_card(stats_grid, "Balance Hídrico Final", f"{final_balance:.2f}", "mm", 2, 1, 
                          value_color=balance_color)

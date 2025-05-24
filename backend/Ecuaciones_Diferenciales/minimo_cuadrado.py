@@ -2,27 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class MinimosCuadrados:
-    """
-    Proporciona ajuste de mínimos cuadrados lineal.
-    """
+
     @staticmethod
     def ajustar_lineal(xs: list, ys: list) -> dict:
-        """
-        Ajusta una línea y = a*x + b a los datos.
-        :param xs: Lista de valores x.
-        :param ys: Lista de valores y.
-        :return: Diccionario con 'a', 'b', 'xs', 'ys_originales', 'ys_ajustados'
-        """
+
         x_arr = np.array(xs, dtype=float)
         y_arr = np.array(ys, dtype=float)
         n = len(x_arr)
         x_mean = x_arr.mean()
         y_mean = y_arr.mean()
-        # coeficiente a
+
         a = ((x_arr - x_mean) * (y_arr - y_mean)).sum() / ((x_arr - x_mean)**2).sum()
-        # ordenada b
         b = y_mean - a * x_mean
-        # valores ajustados
         ys_ajust = a * x_arr + b
         return {
             "a": float(a),
@@ -39,7 +30,6 @@ class MinimosCuadrados:
         ys_originales = np.array(ys_originales)
         ys_ajustados = np.array(ys_ajustados)
 
-        # Ordena los valores para la línea de ajuste
         orden = np.argsort(xs)
         xs_ord = xs[orden]
         ys_ajustados_ord = ys_ajustados[orden]

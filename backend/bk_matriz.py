@@ -58,22 +58,3 @@ def resolver_sistema(A: np.ndarray, b: np.ndarray) -> np.ndarray:
         raise ValueError("La dimensión de b no coincide con A.")
     return np.linalg.solve(A, b)
 
-
-def rango(A: np.ndarray) -> int:
-
-    return int(np.linalg.matrix_rank(A))
-
-
-def traza(A: np.ndarray) -> float:
-
-    if A.shape[0] != A.shape[1]:
-        raise ValueError("Solo se puede calcular traza de matriz cuadrada.")
-    return float(np.trace(A))
-
-
-def eigen(A: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-
-    if A.shape[0] != A.shape[1]:
-        raise ValueError("Solo se puede calcular eigen de matriz cuadrada.")
-    vals, vecs = np.linalg.eig(A)
-    return vals, vecs

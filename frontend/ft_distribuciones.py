@@ -426,13 +426,10 @@ class DistribucionesPage(ctk.CTkFrame):
             x_label = "Valor"
             y_label = "Frecuencia"
             # Gráfico para valores discretos
-            unique_vals = sorted(list(set(transformados)))
-            counts = [transformados.count(val) for val in unique_vals]
+            unique_vals, counts = np.unique(transformados, return_counts=True)
             ax.bar(unique_vals, counts, color=ACCENT, alpha=0.7, edgecolor='black', width=0.4)
-            
             # Añadir línea de valor esperado
-            ax.axvline(x=lam, color='red', linestyle='--', 
-                      label=f"Valor esperado (λ={lam})")
+            ax.axvline(x=lam, color='red', linestyle='--', label=f"Valor esperado (λ={lam})")
             ax.legend()
             
         elif distribucion == "Exponencial":

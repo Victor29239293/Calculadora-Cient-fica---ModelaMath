@@ -8,7 +8,7 @@ from sympy.parsing.sympy_parser import (
 )
 from math import isfinite
 
-# configuramos transformaciones para parse_expr
+
 _transformations = standard_transformations + (implicit_multiplication_application,)
 
 
@@ -70,12 +70,7 @@ def taylor2_method(f_str, df_str, x0, y0, xf, n):
 
 
 def analytic_solver(equation_str: str, condiciones=None):
-    """
-    Resuelve analíticamente EDOs 1º y 2º orden:
-    - Interpreta y' y y''
-    - Convierte SOLO las y sueltas ➔ y(x)
-    - Usa parse_expr con un local_dict adecuado
-    """
+
     x = symbols('x')
     y = Function('y')
 
@@ -84,12 +79,9 @@ def analytic_solver(equation_str: str, condiciones=None):
     s = re.sub(r"y''",      r"Derivative(y(x),(x,2))", s)
     s = re.sub(r"y'",       r"Derivative(y(x),x)",     s)
 
-    # 2) reemplazar SOLO las y que no van seguidas de "(…)"
-    #    (?<!\w) asegura que no forme parte de un identificador mayor
-    #    (?!\() evita tocar y(x) ni Derivative(y(x),…)
     s = re.sub(r"(?<!\w)y(?!\()", "y(x)", s)
 
-    # 3) parsear
+
     local_dict = {'x': x, 'y': y, 'Derivative': Derivative}
     try:
         if '=' in s:
@@ -103,16 +95,15 @@ def analytic_solver(equation_str: str, condiciones=None):
     except Exception as err:
         raise ValueError(f"Error parseando la ecuación: {err}")
 
-    # 4) condiciones iniciales
     ics = {}
     if condiciones:
         x0 = condiciones[0]
         if len(condiciones) >= 2:
-            ics[x0] = condiciones[1]  # y(x0)=y0
+            ics[x0] = condiciones[1] 
         if len(condiciones) == 3:
-            ics[ Derivative(y(x), x).subs(x, x0) ] = condiciones[2]  # y'(x0)=dy0
+            ics[ Derivative(y(x), x).subs(x, x0) ] = condiciones[2]  
 
-    # 5) resolución con dsolve
+
     try:
         sol = sp.dsolve(eq, y(x), ics=ics) if ics else sp.dsolve(eq, y(x))
         return sol
